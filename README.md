@@ -4,7 +4,7 @@ En la PHP.RAR estan los php del proyecto FeedMeWebS que estab subidos en https:/
 canal del video tutorial:
 https://www.youtube.com/watch?v=CIQIzuwxoxw&t=575s
 
-github del proyecto origianl:
+github del proyecto original:
 https://github.com/fmgarcia27/AndroidstudioProjects/tree/master/ServiciosWeb
 
 github con los php del proyecto original:
