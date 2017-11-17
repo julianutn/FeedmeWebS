@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     EditText direccion;
     TextView resultado;
     Button buscar;
-
+    List<String> listaRecetas = new ArrayList<String>();
 
     // IP de mi Url
     String IP = "https://feedme2.000webhostapp.com";
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String DELETE = IP + "/borrar_alumno.php";
     String INSERT = IP + "/insertar_alumno.php";
     String GETREC = IP + "/obtener_por_ing.php";
-    String GETALLREC = IP + "/obtener_recetas.php";
+    String GETALLREC = IP + "/obtener_busqueda.php";
 
     ObtenerWebService hiloconexion;
     // fin parte conexion 1
@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String[] lstSource = {
 
             "Lechuga",
+            "Queso",
             "Tomate",
             "Harina",
             "Leche",
@@ -216,11 +217,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()){
 
             case R.id.button:
-
+                String aux = null;
+                for (String item : aBuscar) {
+                    if (aux == null) {
+                        aux = item;
+                    } else {
+                        aux = aux + "%" + item;
+                    }
+                }
                 hiloconexion = new ObtenerWebService();
-                String cadenallamada = GETALLREC;
+                String cadenallamada = GETALLREC+"?idalumno="+aux;
                 hiloconexion.execute(cadenallamada,"1");   // Parámetros que recibe doInBackground
-                textView.setText("anda bien, boton");
+                textView.setText(aux);
 
                 break;
 
@@ -255,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     if (respuesta == HttpURLConnection.HTTP_OK){
 
-                        devuelve ="sdfsdfs";
+
 
                         InputStream in = new BufferedInputStream(connection.getInputStream());  // preparo la cadena de entrada
 
@@ -273,17 +281,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
                         JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
                         //Accedemos al vector de resultados
-                        devuelve ="5664";
+
                         String resultJSON = respuestaJSON.getString("estado");   // estado es el nombre del campo en el JSON
                         //resultJSON = "2";
 
 
                         if (resultJSON=="1"){      // hay alumnos a mostrar
-                            JSONArray alumnosJSON = respuestaJSON.getJSONArray("alumnos");   // estado es el nombre del campo en el JSON
+                            JSONArray alumnosJSON = respuestaJSON.getJSONArray("alumno");   // estado es el nombre del campo en el JSON
                             for(int i=0;i<alumnosJSON.length();i++){
                                 devuelve = devuelve + alumnosJSON.getJSONObject(i).getString("ing_id") + " " +
                                         alumnosJSON.getJSONObject(i).getString("ing_ing") + " " +
                                         alumnosJSON.getJSONObject(i).getString("ing_receta") + "\n";
+                                listaRecetas.add( alumnosJSON.getJSONObject(i).getString("ing_receta"));
 
                             }
 
@@ -343,9 +352,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         String resultJSON = respuestaJSON.getString("estado");   // estado es el nombre del campo en el JSON
 
                         if (resultJSON=="1"){      // hay un alumno que mostrar
-                            devuelve = devuelve + respuestaJSON.getJSONObject("alumno").getString("ing_ing") + " " +
-                                    respuestaJSON.getJSONObject("alumno").getString("ing_receta");// + " " +
-                                    //respuestaJSON.getJSONObject("alumno").getString("direccion");
+                            devuelve = devuelve + respuestaJSON.getJSONObject("alumno").getString("ing_id") + " " +
+                                    respuestaJSON.getJSONObject("alumno").getString("ing_ind");// + " " +
+                                    respuestaJSON.getJSONObject("alumno").getString("ind_receta");
 
                         }
                         else if (resultJSON=="2"){
@@ -578,7 +587,7 @@ protected void onCancelled(String s) {
 
         @Override
         protected void onPostExecute(String s) {
-            resultado.setText(s+"asdadsa");
+            resultado.setText(s);
             Log.d("datos",s );
             textView.setText("anda bien");
 
