@@ -294,6 +294,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         alumnosJSON.getJSONObject(i).getString("ing_receta") + "\n";
                                 listaRecetas.add( alumnosJSON.getJSONObject(i).getString("ing_receta"));
 
+
                             }
 
                         }
